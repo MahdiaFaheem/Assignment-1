@@ -507,7 +507,7 @@
 
       <div class="abstract" id="abstract">
         <h2>Abstract</h2>
-        <p>This paper asks whether recent Google Search Console signals can help an editor prioritize content pages at risk of a sharp next-month impression decline. It uses the full 78,835,655-row FlyRank warehouse daily-performance table to create 469,410 eligible client-content-month examples after client-specific GSC start-date and coverage filters. A fixed Random Forest and a transparent recent-trend baseline are evaluated on June 2026 for 4,245 examples from nine clients excluded from training. At a 41.0% test decline rate, both rankers reach 90% precision at 20 and 50; the model has slightly lower ROC AUC (0.720 vs. 0.721), equal average precision (0.646), and only a one-point precision-at-100 edge (87% vs. 86%). These findings show no meaningful improvement over the simpler trend rule and support only retrospective human-review prioritization, not causal refresh impact or future guarantees.</p>
+        <p>This paper asks whether recent Google Search Console signals can help FlyRank editors prioritize existing pages for investigation in the content-refresh workflow when impressions decline. It uses the full 78,835,655-row FlyRank warehouse daily-performance table to create 469,410 eligible client-content-month examples after client-specific GSC start-date and coverage filters. A fixed Random Forest and a transparent recent-trend baseline are evaluated on June 2026 for 4,245 examples from nine clients excluded from training. At a 41.0% test decline rate, both rankers reach 90% precision at 20 and 50; the model has slightly lower ROC AUC (0.720 vs. 0.721), equal average precision (0.646), and only a one-point precision-at-100 edge (87% vs. 86%). These findings show no meaningful improvement over the simpler trend rule and support only retrospective human-review prioritization, not causal refresh impact or future guarantees.</p>
       </div>
 
       <div class="quick-results" aria-label="Headline results">
@@ -541,7 +541,7 @@
     <section class="paper-section" id="problem" aria-labelledby="problem-title">
       <p class="section-kicker">01 · Introduction</p>
       <h2 id="problem-title">A review queue, not an automatic editor</h2>
-      <p class="lede">An editor sees a page's search impressions fall and needs to decide what to investigate first. A ranking can organize that review, but it cannot tell whether the cause is seasonality, a technical issue, changed search intent, or the content itself.</p>
+      <p class="lede">In FlyRank's content-refresh workflow, an editor sees search impressions fall for existing pages and needs to decide what to investigate first. A ranking can organize that review, but it cannot tell whether the cause is seasonality, a technical issue, changed search intent, or the content itself.</p>
       <p>The research question is whether the last two complete months of Google Search Console (GSC) signals can rank content items whose average daily impressions will fall by more than 20% in the following month. The unit is one pseudonymized content item for one client and one target month. False positives consume review time; an unjustified edit can damage a useful page. Therefore, the output is a human-review priority, never an instruction to rewrite, redirect, merge, or remove a page.</p>
     </section>
 

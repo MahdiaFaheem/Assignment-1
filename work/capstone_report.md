@@ -7,7 +7,7 @@
 
 ## 1. Problem framing
 
-This analysis asks whether two completed months of Google Search Console (GSC) signals can rank content items whose average daily impressions will fall by more than 20% in the immediately following month. The unit is one pseudonymized content item for one client and one target month. The output is a review-priority score; an editor investigates high-ranked items for seasonality, technical/indexing issues, search-intent changes, or content concerns. A false positive spends review time, while an unjustified edit can damage a useful page, so the score never triggers an automatic change.
+FlyRank's content-refresh workflow asks editors to decide which existing pages to investigate before spending effort on a refresh. This analysis asks whether two completed months of Google Search Console (GSC) signals can rank content items whose average daily impressions will fall by more than 20% in the immediately following month. The unit is one pseudonymized content item for one client and one target month. The output is a review-priority score; an editor investigates high-ranked items for seasonality, technical/indexing issues, search-intent changes, or content concerns. A false positive spends review time, while an unjustified edit can damage a useful page, so the score never triggers an automatic change.
 
 ## 2. Data safety
 
