@@ -1,0 +1,111 @@
+{
+  "dataset": {
+    "repository": "FlyRank/internship-warehouse",
+    "build": "flyrank_pseudonymized_warehouse_release_v20260703",
+    "table": "fact_content_daily_performance",
+    "published_rows": 78835655,
+    "report_date_min": "2025-01-27",
+    "report_date_max": "2026-06-30"
+  },
+  "analysis": {
+    "eligible_page_month_examples": 469410,
+    "minimum_gsc_days_per_month": 20,
+    "minimum_prior_two_month_impressions": 200,
+    "target": "next-month average daily impressions < 80% of the mean in the prior two months",
+    "feature_columns": [
+      "log_current_impressions",
+      "log_previous_impressions",
+      "log_current_clicks",
+      "log_previous_clicks",
+      "current_avg_position",
+      "previous_avg_position",
+      "position_change",
+      "historical_impression_change",
+      "current_ctr",
+      "previous_ctr"
+    ],
+    "test_target_month": "2026-06",
+    "train_target_month_min": "2025-05",
+    "train_target_month_max": "2026-05",
+    "train_examples": 350172,
+    "test_examples": 4245,
+    "held_out_clients_count": 9,
+    "random_state": 42
+  },
+  "test_decline_base_rate": 0.4103651354534747,
+  "ranking_metrics": {
+    "recent_trend_baseline": {
+      "base_rate": 0.4103651354534747,
+      "roc_auc": 0.7212549303637015,
+      "average_precision": 0.6457036704272509,
+      "precision_at_20": 0.9,
+      "precision_at_50": 0.9,
+      "precision_at_100": 0.86
+    },
+    "random_forest": {
+      "base_rate": 0.4103651354534747,
+      "roc_auc": 0.7204798558606824,
+      "average_precision": 0.6458358757284042,
+      "precision_at_20": 0.9,
+      "precision_at_50": 0.9,
+      "precision_at_100": 0.87
+    }
+  },
+  "top_feature_importance": [
+    {
+      "feature": "historical_impression_change",
+      "importance": 0.5489938372836618
+    },
+    {
+      "feature": "position_change",
+      "importance": 0.12739701170965884
+    },
+    {
+      "feature": "log_previous_impressions",
+      "importance": 0.09524930858975166
+    },
+    {
+      "feature": "current_ctr",
+      "importance": 0.06472985905063158
+    },
+    {
+      "feature": "log_current_impressions",
+      "importance": 0.040236622952640085
+    },
+    {
+      "feature": "previous_ctr",
+      "importance": 0.03248055860296644
+    },
+    {
+      "feature": "log_current_clicks",
+      "importance": 0.03000928193601383
+    },
+    {
+      "feature": "current_avg_position",
+      "importance": 0.025205148196515367
+    },
+    {
+      "feature": "previous_avg_position",
+      "importance": 0.019554608170433696
+    },
+    {
+      "feature": "log_previous_clicks",
+      "importance": 0.016143763507726734
+    }
+  ],
+  "top50_review_counts": {
+    "Check seasonality, technical/indexing health, and search results before editing.": 49,
+    "Verify the trend and inspect demand/intent context before editing.": 1
+  },
+  "top50_reason_counts": {
+    "recent_demand_and_position_drop": 49,
+    "recent_impression_drop": 1
+  },
+  "figures": [
+    "work/figures/capstone_precision_at_k.svg",
+    "work/figures/capstone_monthly_decline_rate.svg",
+    "work/figures/capstone_feature_importance.svg",
+    "work/figures/capstone_top50_recommendation_mix.svg"
+  ],
+  "publication_note": "Aggregate results only; the hashed-ID queue and feature cache remain local and uncommitted."
+}
