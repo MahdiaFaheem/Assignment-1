@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A client-held-out, future-month evaluation of whether recent Google Search Console signals can help prioritize content for human review.">
+  <meta name="theme-color" content="#f5f7f4">
+  <title>Can search signals flag next-month content decline? | Mahdia Faheem</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172a2a;
+      --muted: #526565;
+      --paper: #ffffff;
+      --wash: #f5f7f4;
+      --line: #d7e1dc;
+      --teal: #176b62;
+      --teal-dark: #0e4b45;
+      --teal-pale: #e5f2ee;
+      --amber: #805512;
+      --amber-pale: #fff4d8;
+      --shadow: 0 16px 40px rgb(23 42 42 / 7%);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--wash);
+      color: var(--ink);
+      font: 16px/1.7 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    a {
+      color: var(--teal-dark);
+      text-decoration-thickness: 0.08em;
+      text-underline-offset: 0.18em;
+    }
+
+    a:hover {
+      color: var(--teal);
+    }
+
+    a:focus-visible {
+      outline: 3px solid #d39224;
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+
+    .skip-link {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      z-index: 10;
+      padding: 0.6rem 0.9rem;
+      transform: translateY(-160%);
+      background: var(--ink);
+      color: white;
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .site-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--line);
+      background: rgb(255 255 255 / 90%);
+    }
+
+    .header-inner,
+    main,
+    .footer-inner {
+      width: min(100% - 2rem, 1100px);
+      margin-inline: auto;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      color: var(--ink);
+      font-size: 0.93rem;
+      font-weight: 750;
+      letter-spacing: 0.01em;
+      text-decoration: none;
+    }
+
+    .header-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.1rem;
+      font-size: 0.88rem;
+    }
+
+    main {
+      padding-block: 3rem 5rem;
+    }
+
+    .hero {
+      padding: clamp(1.5rem, 5vw, 3.4rem);
+      border: 1px solid var(--line);
+      border-radius: 1.25rem;
+      background:
+        radial-gradient(ellipse at 92% 3%, rgb(208 234 224 / 70%), transparent 36%),
+        var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      margin: 0 0 0.8rem;
+      color: var(--teal-dark);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3 {
+      color: var(--ink);
+      line-height: 1.2;
+      text-wrap: balance;
+    }
+
+    h1 {
+      max-width: 850px;
+      margin: 0;
+      font-size: clamp(2.2rem, 6vw, 4.2rem);
+      letter-spacing: -0.045em;
+    }
+
+    h2 {
+      margin: 0 0 1rem;
+      font-size: clamp(1.55rem, 3vw, 2rem);
+      letter-spacing: -0.025em;
+    }
+
+    h3 {
+      margin: 1.5rem 0 0.45rem;
+      font-size: 1.1rem;
+    }
+
+    p,
+    ul,
+    ol {
+      margin-top: 0;
+    }
+
+    .byline {
+      margin: 1.2rem 0 0;
+      color: var(--muted);
+    }
+
+    .byline span + span::before {
+      content: "·";
+      margin-inline: 0.55rem;
+      color: #8a9b95;
+    }
+
+    .abstract {
+      max-width: 850px;
+      margin: 2rem 0 0;
+      padding: 1.25rem 1.4rem;
+      border-left: 4px solid var(--teal);
+      background: rgb(255 255 255 / 78%);
+    }
+
+    .abstract h2 {
+      margin-bottom: 0.55rem;
+      font-size: 1rem;
+      letter-spacing: 0.02em;
+    }
+
+    .abstract p {
+      margin-bottom: 0;
+    }
+
+    .quick-results {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.85rem;
+      margin-top: 1.5rem;
+    }
+
+    .result-card {
+      min-height: 120px;
+      padding: 1rem 1.1rem;
+      border: 1px solid var(--line);
+      border-radius: 0.85rem;
+      background: var(--paper);
+    }
+
+    .result-card strong {
+      display: block;
+      color: var(--teal-dark);
+      font-size: 1.65rem;
+      line-height: 1.2;
+    }
+
+    .result-card span {
+      display: block;
+      margin-top: 0.4rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .toc {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem 1rem;
+      margin: 1.5rem 0 2.5rem;
+      padding: 0.9rem 1rem;
+      border: 1px solid var(--line);
+      border-radius: 0.75rem;
+      background: var(--paper);
+      font-size: 0.88rem;
+    }
+
+    .toc strong {
+      margin-right: 0.35rem;
+    }
+
+    .paper-section {
+      scroll-margin-top: 1.5rem;
+      margin-top: 1.2rem;
+      padding: clamp(1.35rem, 4vw, 2.25rem);
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      background: var(--paper);
+      box-shadow: 0 6px 20px rgb(23 42 42 / 3%);
+    }
+
+    .paper-section > :last-child {
+      margin-bottom: 0;
+    }
+
+    .section-kicker {
+      margin: 0 0 0.45rem;
+      color: var(--teal);
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .lede {
+      color: #314747;
+      font-size: 1.08rem;
+    }
+
+    .callout {
+      margin: 1.2rem 0;
+      padding: 1rem 1.2rem;
+      border: 1px solid #e6d5aa;
+      border-radius: 0.7rem;
+      background: var(--amber-pale);
+    }
+
+    .callout strong {
+      color: var(--amber);
+    }
+
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.7rem;
+      margin: 1.25rem 0;
+    }
+
+    .data-fact {
+      padding: 0.9rem;
+      border-radius: 0.7rem;
+      background: var(--wash);
+    }
+
+    .data-fact strong {
+      display: block;
+      color: var(--teal-dark);
+      font-size: 1.1rem;
+    }
+
+    .data-fact span {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin: 1.2rem 0;
+      border: 1px solid var(--line);
+      border-radius: 0.75rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.93rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    caption {
+      padding: 0.9rem 1rem;
+      color: var(--muted);
+      font-size: 0.88rem;
+      text-align: left;
+    }
+
+    th,
+    td {
+      padding: 0.75rem 0.85rem;
+      border-top: 1px solid var(--line);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    thead th {
+      border-top: 0;
+      background: #edf3ef;
+      color: var(--ink);
+      font-size: 0.82rem;
+    }
+
+    tbody th {
+      font-weight: 700;
+    }
+
+    .figure-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1.2rem;
+    }
+
+    figure {
+      min-width: 0;
+      margin: 0;
+      padding: 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: 0.8rem;
+      background: #fff;
+    }
+
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 0.4rem;
+    }
+
+    figcaption {
+      padding: 0.65rem 0.25rem 0.15rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    figcaption strong {
+      color: var(--teal-dark);
+    }
+
+    .steps {
+      counter-reset: review-step;
+      padding: 0;
+      list-style: none;
+    }
+
+    .steps li {
+      counter-increment: review-step;
+      position: relative;
+      min-height: 2.8rem;
+      margin: 0.85rem 0;
+      padding-left: 3rem;
+    }
+
+    .steps li::before {
+      content: counter(review-step);
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: grid;
+      width: 2rem;
+      height: 2rem;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--teal-pale);
+      color: var(--teal-dark);
+      font-weight: 800;
+    }
+
+    .code-note {
+      overflow-wrap: anywhere;
+      padding: 0.1rem 0.35rem;
+      border-radius: 0.25rem;
+      background: #edf3ef;
+      color: #173a36;
+      font: 0.9em ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+
+    .source-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin-top: 1rem;
+    }
+
+    .source-links a {
+      display: inline-block;
+      padding: 0.55rem 0.8rem;
+      border: 1px solid var(--line);
+      border-radius: 0.55rem;
+      background: var(--paper);
+      font-size: 0.9rem;
+      font-weight: 650;
+      text-decoration: none;
+    }
+
+    .site-footer {
+      padding: 1.5rem 1rem 2.5rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem 1.5rem;
+    }
+
+    @media (max-width: 760px) {
+      main {
+        padding-top: 1.5rem;
+      }
+
+      .quick-results,
+      .data-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .figure-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 460px) {
+      .quick-results,
+      .data-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .byline span {
+        display: block;
+      }
+
+      .byline span + span::before {
+        content: "";
+        margin: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to paper</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#top">ML-11 Capstone Research</a>
+      <nav class="header-links" aria-label="Project links">
+        <a href="https://github.com/MahdiaFaheem/Assignment-1">Repository</a>
+        <a href="https://huggingface.co/datasets/FlyRank/internship-warehouse">Dataset</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="paper-title">
+      <p class="eyebrow">FlyRank warehouse · ML-11 capstone</p>
+      <h1 id="paper-title">Can prior search signals flag next-month content decline across new clients?</h1>
+      <p class="byline">
+        <span>Mahdia Faheem</span>
+        <span>Research analysis</span>
+        <span>Results generated 14 November 2026</span>
+      </p>
+
+      <div class="abstract" id="abstract">
+        <h2>Abstract</h2>
+        <p>This paper asks whether recent Google Search Console signals can help an editor prioritize content pages at risk of a sharp next-month impression decline. It uses the full 78,835,655-row FlyRank warehouse daily-performance table to create 469,410 eligible client-content-month examples after client-specific GSC start-date and coverage filters. A fixed Random Forest and a transparent recent-trend baseline are evaluated on June 2026 for 4,245 examples from nine clients excluded from training. At a 41.0% test decline rate, both rankers reach 90% precision at 20 and 50; the model has slightly lower ROC AUC (0.720 vs. 0.721), equal average precision (0.646), and only a one-point precision-at-100 edge (87% vs. 86%). These findings show no meaningful improvement over the simpler trend rule and support only retrospective human-review prioritization, not causal refresh impact or future guarantees.</p>
+      </div>
+
+      <div class="quick-results" aria-label="Headline results">
+        <div class="result-card">
+          <strong>41%</strong>
+          <span>Decline base rate in the held-out test set</span>
+        </div>
+        <div class="result-card">
+          <strong>90% / 90%</strong>
+          <span>Baseline and model precision@50, respectively</span>
+        </div>
+        <div class="result-card">
+          <strong>No clear lift</strong>
+          <span>The more complex model does not meaningfully beat the trend rule</span>
+        </div>
+      </div>
+    </section>
+
+    <nav class="toc" aria-label="On this page">
+      <strong>On this page</strong>
+      <a href="#problem">Problem</a>
+      <a href="#data">Data</a>
+      <a href="#method">Method</a>
+      <a href="#results">Results</a>
+      <a href="#limitations">Limitations</a>
+      <a href="#recommendations">Recommendations</a>
+      <a href="#reproducibility">Reproducibility</a>
+      <a href="#credit">Data credit</a>
+    </nav>
+
+    <section class="paper-section" id="problem" aria-labelledby="problem-title">
+      <p class="section-kicker">01 · Introduction</p>
+      <h2 id="problem-title">A review queue, not an automatic editor</h2>
+      <p class="lede">An editor sees a page's search impressions fall and needs to decide what to investigate first. A ranking can organize that review, but it cannot tell whether the cause is seasonality, a technical issue, changed search intent, or the content itself.</p>
+      <p>The research question is whether the last two complete months of Google Search Console (GSC) signals can rank content items whose average daily impressions will fall by more than 20% in the following month. The unit is one pseudonymized content item for one client and one target month. False positives consume review time; an unjustified edit can damage a useful page. Therefore, the output is a human-review priority, never an instruction to rewrite, redirect, merge, or remove a page.</p>
+    </section>
+
+    <section class="paper-section" id="data" aria-labelledby="data-title">
+      <p class="section-kicker">02 · Data</p>
+      <h2 id="data-title">A large daily warehouse, narrowed to measurable monthly histories</h2>
+      <p>The source is the gated <a href="https://huggingface.co/datasets/FlyRank/internship-warehouse"><strong>FlyRank/internship-warehouse</strong></a> release, build <code class="code-note">flyrank_pseudonymized_warehouse_release_v20260703</code>. The analysis reads <code class="code-note">fact_content_daily_performance</code>, which has 78,835,655 published daily rows from 27 January 2025 through 30 June 2026.</p>
+
+      <div class="data-grid" aria-label="Dataset summary">
+        <div class="data-fact"><strong>78.8M</strong><span>Daily source rows</span></div>
+        <div class="data-fact"><strong>469,410</strong><span>Eligible client-content-month examples</span></div>
+        <div class="data-fact"><strong>47</strong><span>Clients represented after coverage filters</span></div>
+        <div class="data-fact"><strong>2025–2026</strong><span>Observed reporting period</span></div>
+      </div>
+
+      <p>For each client, dates before <code class="code-note">gsc_data_start</code> are excluded and monthly rates use only dates with <code class="code-note">gsc_data_available</code>. Each of the two feature months and the target month must have at least 20 available GSC days. The two feature months together must have at least 200 impressions.</p>
+      <p>The fixed-window <code class="code-note">fact_content_query_90d</code> table is excluded because its window overlaps the outcome. GA4 is excluded because its availability varies and this question is about GSC. Hashed IDs are used only for grouping and the local split/queue; they are neither features nor public outputs. The paper includes no client names, page URLs, titles, keywords, or raw queries.</p>
+    </section>
+
+    <section class="paper-section" id="method" aria-labelledby="method-title">
+      <p class="section-kicker">03 · Methodology</p>
+      <h2 id="method-title">Two completed months in; the immediately following month out</h2>
+      <ol class="steps">
+        <li><strong>Aggregate monthly signals.</strong> Compute average impressions, clicks, and position using GSC-available days.</li>
+        <li><strong>Define the target.</strong> A page-month is labeled as declining when next-month average daily impressions are below 80% of the mean daily rate in the two feature months.</li>
+        <li><strong>Compare two rankers.</strong> The transparent baseline ranks by the recent relative impression-rate drop. The fixed Random Forest uses log impression/click rates from both months, current and prior average position, position change, historical impression change, and CTR.</li>
+        <li><strong>Hold out future clients.</strong> June 2026 is the test month. A seeded 20% group of clients with eligible June examples is excluded from all training months; the remaining training labels end in May 2026.</li>
+      </ol>
+      <p>The model is a median-imputation pipeline with 200 Random Forest trees, maximum depth 10, minimum leaf size 50, balanced subsample class weights, and random state 42. The client/content hashes, target-month measurements, and label-derived fields are excluded from the feature list. This design evaluates ranking for a future month and clients not used for fitting; it does not establish performance for every client or later periods.</p>
+    </section>
+
+    <section class="paper-section" id="results" aria-labelledby="results-title">
+      <p class="section-kicker">04 · Results</p>
+      <h2 id="results-title">The recent-trend rule matches the model at the top of the queue</h2>
+      <p>The model trained on 350,172 earlier examples from 30 non-held-out clients. The final test contains 4,245 June 2026 examples from nine held-out clients, with a decline base rate of 41.0%. Both methods reach 90% precision among the top 20 and top 50 items, and both have average precision of 0.646. The baseline ROC AUC is 0.721 versus 0.720 for the Random Forest; the model's only top-k edge is P@100 of 87% versus 86%.</p>
+
+      <div class="table-wrap">
+        <table>
+          <caption>Both rankers evaluated on the same June 2026 client-held-out test set.</caption>
+          <thead>
+            <tr>
+              <th scope="col">Ranker</th>
+              <th scope="col">Test base rate</th>
+              <th scope="col">ROC AUC</th>
+              <th scope="col">Average precision</th>
+              <th scope="col">P@20</th>
+              <th scope="col">P@50</th>
+              <th scope="col">P@100</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Recent-trend baseline</th>
+              <td>41.0%</td><td>0.721</td><td>0.646</td><td>90%</td><td>90%</td><td>86%</td>
+            </tr>
+            <tr>
+              <th scope="row">Random Forest</th>
+              <td>41.0%</td><td>0.720</td><td>0.646</td><td>90%</td><td>90%</td><td>87%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>The baseline's P@50 is about 2.19 times the test base rate. The one-point P@100 difference does not show a meaningful advantage for the more complex model. The full eligible June cohort has a 70.3% decline-label rate, quite different from the 41.0% rate among held-out clients; the test base rate must be interpreted for this test group, not as a universal client prevalence.</p>
+
+      <div class="figure-grid">
+        <figure>
+          <img src="assets/capstone_precision_at_k.svg" alt="Bar chart comparing precision at 20 and 50 for the recent-trend baseline and Random Forest, with the held-out test base rate shown as a dashed line." width="740" height="440" loading="lazy">
+          <figcaption><strong>Takeaway.</strong> Both rankers are well above the 41.0% base rate at the top 20 and 50, but the Random Forest does not improve on the baseline there.</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/capstone_monthly_decline_rate.svg" alt="Line chart of the observed decline-label rate by target month from April 2025 to June 2026." width="900" height="440" loading="lazy">
+          <figcaption><strong>Takeaway.</strong> The observed label rate varies across months, so month and client composition matter when interpreting a ranking metric.</figcaption>
+        </figure>
+      </div>
+
+      <h3>What the model uses</h3>
+      <p>Historical impression change has the largest Random Forest impurity importance (0.549), followed by position change (0.127). The model is relying heavily on the trend signal; these importances are descriptive and do not show that changing content will cause impressions to recover.</p>
+      <figure>
+        <img src="assets/capstone_feature_importance.svg" alt="Horizontal bar chart of the ten largest Random Forest impurity importance values; historical impression change is highest, followed by position change." width="800" height="520" loading="lazy">
+        <figcaption><strong>Takeaway.</strong> Recent impression change dominates this model's descriptive feature importance; importance is not a causal explanation.</figcaption>
+      </figure>
+    </section>
+
+    <section class="paper-section" id="limitations" aria-labelledby="limitations-title">
+      <p class="section-kicker">05 · Limitations</p>
+      <h2 id="limitations-title">What this result cannot establish</h2>
+      <ul>
+        <li>The test is one future month from one warehouse release. It does not guarantee performance in later months, other seasons, or all clients.</li>
+        <li>The client holdout excludes clients used for training, but it includes only nine clients; its 41.0% test base rate differs from the full June cohort's 70.3%.</li>
+        <li>Coverage and volume filters select measurable pages and leave out sparse or low-impression content.</li>
+        <li>The label is a relative impression-rate drop, not a judgment of content quality. Search demand, seasonality, technical issues, measurement coverage, and ranking changes can all affect it.</li>
+        <li>This is observational ranking analysis. It does not estimate a causal refresh effect, calibrated intervention probabilities, revenue, editorial costs, or incremental return.</li>
+      </ul>
+    </section>
+
+    <section class="paper-section" id="recommendations" aria-labelledby="recommendations-title">
+      <p class="section-kicker">06 · Ranked recommendations</p>
+      <h2 id="recommendations-title">Use ranking to start a human diagnosis</h2>
+      <p>Because the Random Forest does not materially outperform the recent-trend baseline, the simpler rule is the appropriate first triage comparator. The model-ranked top 50 is retrospective, constructed from April–May 2026 signals to assess June outcomes; it is not a live action queue.</p>
+      <ol class="steps">
+        <li><strong>Check measurement and indexing first.</strong> Confirm GSC coverage, indexability, technical health, and whether the page changed recently.</li>
+        <li><strong>Check context before editing.</strong> Review seasonality, search-result changes, demand, and intent fit. A falling impression rate alone does not identify a content problem.</li>
+        <li><strong>Require an editor's judgment.</strong> Only make an update when the investigation supports it; never auto-publish, redirect, merge, or delete content from a score.</li>
+        <li><strong>Measure any later intervention separately.</strong> Log the decision and evaluate subsequent outcomes with a future, time-aware design before considering broader use.</li>
+      </ol>
+      <p>In the retrospective top 50, 49 items route to checking seasonality, technical/indexing health, and search results; one routes to verifying the recent impression trend. These are review prompts, not prescriptions.</p>
+      <figure>
+        <img src="assets/capstone_top50_recommendation_mix.svg" alt="Horizontal bar chart showing the aggregate human-review routes for the model-ranked top 50: 49 items for seasonality, technical/indexing, and search-result checks, and one for verifying the impression trend." width="900" height="480" loading="lazy">
+        <figcaption><strong>Takeaway.</strong> The queue is designed to guide human diagnosis, not automate editorial decisions.</figcaption>
+      </figure>
+    </section>
+
+    <section class="paper-section" id="reproducibility" aria-labelledby="reproducibility-title">
+      <p class="section-kicker">07 · Reproducibility</p>
+      <h2 id="reproducibility-title">Re-run from the notebook</h2>
+      <ol>
+        <li>Install the project dependencies with <code class="code-note">python -m pip install -r requirements.txt</code>.</li>
+        <li>Accept the Hugging Face dataset gate and authenticate locally with a Read token using <code class="code-note">hf auth login</code>. Never place the token in a notebook or repository file.</li>
+        <li>Open the linked capstone notebook and run all cells from top to bottom. The analysis uses random state 42 and caches its aggregate panel locally to avoid rescanning the 78.8M-row table on reruns.</li>
+      </ol>
+      <p>The local feature cache and hashed-ID ranked queue are gitignored. The public paper contains aggregate results only. The recorded environment was Python 3.12.3, DuckDB 1.5.5, pandas 3.0.5, and scikit-learn 1.9.0.</p>
+      <div class="source-links">
+        <a href="https://github.com/MahdiaFaheem/Assignment-1/blob/main/work/notebooks/capstone.ipynb">Executed notebook</a>
+        <a href="https://github.com/MahdiaFaheem/Assignment-1/blob/main/work/outputs/capstone_metrics_receipt.json">Aggregate metrics receipt</a>
+        <a href="https://github.com/MahdiaFaheem/Assignment-1/blob/main/work/capstone_report.md">Report source</a>
+        <a href="https://github.com/MahdiaFaheem/Assignment-1">Project repository</a>
+      </div>
+    </section>
+
+    <section class="paper-section" id="credit" aria-labelledby="credit-title">
+      <p class="section-kicker">08 · Acknowledgments</p>
+      <h2 id="credit-title">Data credit</h2>
+      <p>This work uses the <a href="https://huggingface.co/datasets/FlyRank/internship-warehouse"><strong>FlyRank ML Internship warehouse release</strong></a>, build <code class="code-note">flyrank_pseudonymized_warehouse_release_v20260703</code>, sourced from <code class="code-note">central_data_warehouse</code>. Data credit: <a href="https://flyrank.ai">FlyRank</a> and the FlyRank internship team. The warehouse is pseudonymized; this page reports aggregates and does not reproduce client-level records.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>Mahdia Faheem · ML-11 capstone</span>
+      <span><a href="https://github.com/MahdiaFaheem/Assignment-1">View the public project repository</a></span>
+    </div>
+  </footer>
+</body>
+</html>
